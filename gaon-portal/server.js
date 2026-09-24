@@ -176,7 +176,7 @@ if (useMemoryDb) {
 
 // ===== PRADHAN (ADMIN) LOGIN =====
 const ADMIN_PASSWORD =
-    process.env.ADMIN_PASSWORD || 'bastigaon2026';
+    process.env.ADMIN_PASSWORD || 'shivam@9026';
 
 function requireAdmin(req, res, next) {
     const key = req.headers['x-admin-key'];

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: basti-gaon-portal
+    name: gaon-portal
     env: node
     plan: free
     buildCommand: npm install
@@ -11,4 +11,4 @@ services:
       - key: PORT
         value: 10000
       - key: ADMIN_PASSWORD
-        value: bastigaon2026
+        value: shivam@9026
