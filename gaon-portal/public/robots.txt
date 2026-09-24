@@ -1,4 +1,4 @@
 ﻿User-agent: *
 Allow: /
 
-Sitemap: https://jagdishpurgaon1.onrender.com/sitemap.xml
+Sitemap: https://bastigaonportal.onrender.com/sitemap.xml

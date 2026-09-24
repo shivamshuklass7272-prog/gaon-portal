@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title desc">
+  <title id="title">Basti Gaon Portal</title>
+  <desc id="desc">AI-inspired village portal profile illustration.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" x2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#dbeafe"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" rx="40" fill="url(#bg)"/>
+
+  <g opacity="0.7" fill="none" stroke="#7dd3fc" stroke-width="4">
+    <circle cx="130" cy="150" r="26"/>
+    <circle cx="130" cy="150" r="8" fill="#7dd3fc" stroke="none"/>
+    <circle cx="670" cy="190" r="22"/>
+    <circle cx="670" cy="190" r="7" fill="#7dd3fc" stroke="none"/>
+    <path d="M130 150H275c20 0 32 12 32 32v40M670 190h-90c-26 0-42 18-42 42v50M235 600h120c26 0 42-18 42-42v-20M565 620H440c-28 0-42 18-42 40v8"/>
+  </g>
+
+  <g transform="translate(540 90)">
+    <rect width="170" height="92" rx="22" fill="rgba(15,23,42,0.55)" stroke="#7dd3fc" stroke-width="2"/>
+    <text x="86" y="58" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="38" font-weight="800" fill="#e0f2fe">AI</text>
+  </g>
+
+  <circle cx="400" cy="260" r="150" fill="#f5d0a9"/>
+  <path d="M260 660c25-120 118-185 140-185s115 65 140 185" fill="url(#shirt)"/>
+  <path d="M310 260c0-70 40-120 90-120s90 50 90 120c0 50-22 90-42 115-26 31-48 45-48 45s-22-14-48-45c-20-25-42-65-42-115Z" fill="#1f2937"/>
+  <circle cx="356" cy="255" r="13" fill="#0f172a"/>
+  <circle cx="444" cy="255" r="13" fill="#0f172a"/>
+  <path d="M352 322c28 28 68 28 96 0" fill="none" stroke="#8b5e3c" stroke-width="10" stroke-linecap="round"/>
+  <path d="M328 214c18-52 78-90 144-80 32 5 56 19 76 42-35-4-71 0-101 20-17 12-35 27-52 46-17-9-41-15-67-28Z" fill="#111827"/>
+  <text x="400" y="710" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="52" font-weight="700" fill="#f8fafc" letter-spacing="5">BASTI</text>
+</svg>

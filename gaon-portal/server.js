@@ -12,20 +12,22 @@ const PORT = process.env.PORT || 3000;
 
 // ===== MONGODB =====
 let MONGODB_URI = process.env.MONGODB_URI;
+const useMemoryDb = !MONGODB_URI;
 
 if (!MONGODB_URI) {
-    console.error('❌ MONGODB_URI .env file me nahi mila');
-    process.exit(1);
+    console.warn('⚠️ MONGODB_URI .env file me nahi mila; local memory mode active hai.');
 }
 
 // Clean up: agar galti se MONGODB_URI= ya quotes ya spaces paste ho gaye hon
-MONGODB_URI = MONGODB_URI.trim();
-if (MONGODB_URI.startsWith('MONGODB_URI=')) {
-    MONGODB_URI = MONGODB_URI.slice('MONGODB_URI='.length).trim();
+if (MONGODB_URI) {
+    MONGODB_URI = MONGODB_URI.trim();
+    if (MONGODB_URI.startsWith('MONGODB_URI=')) {
+        MONGODB_URI = MONGODB_URI.slice('MONGODB_URI='.length).trim();
+    }
+    MONGODB_URI = MONGODB_URI.replace(/^['"]|['"]$/g, '').trim();
 }
-MONGODB_URI = MONGODB_URI.replace(/^["']|["']$/g, '').trim();
 
-const client = new MongoClient(MONGODB_URI);
+const client = MONGODB_URI ? new MongoClient(MONGODB_URI) : null;
 
 let db;
 let samasyaCollection;
@@ -35,9 +37,146 @@ let yojanaCollection;
 let chaupalCollection;
 let krishiCollection;
 
+function matchMemoryQuery(doc, query = {}) {
+    if (!query || Object.keys(query).length === 0) return true;
+
+    if (query.$or) {
+        return query.$or.some(part => matchMemoryQuery(doc, part));
+    }
+
+    return Object.entries(query).every(([key, value]) => {
+        if (key === '$or') return true;
+
+        const actual = doc[key];
+
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+            if (value.$in) return Array.isArray(value.$in) ? value.$in.includes(actual) : true;
+            if (value.$ne) return actual !== value.$ne;
+            if (value.$gte !== undefined) return actual >= value.$gte;
+            if (value.$lte !== undefined) return actual <= value.$lte;
+        }
+
+        if (Array.isArray(value)) {
+            return value.includes(actual);
+        }
+
+        return actual === value;
+    });
+}
+
+function createMemoryCollection(initial = []) {
+    const items = [...initial];
+
+    const applySort = (list, sortField = {}) => {
+        const entries = Object.entries(sortField);
+        const sorted = [...list];
+
+        for (const [field, direction] of entries) {
+            const dir = direction === -1 ? -1 : 1;
+            sorted.sort((a, b) => {
+                const av = a?.[field] ?? 0;
+                const bv = b?.[field] ?? 0;
+                return (av > bv ? 1 : av < bv ? -1 : 0) * dir;
+            });
+        }
+
+        return sorted;
+    };
+
+    const queryList = (query = {}) => items.filter(item => matchMemoryQuery(item, query));
+
+    return {
+        async findOne(query = {}) {
+            return queryList(query)[0] || null;
+        },
+        async countDocuments(query = {}) {
+            return queryList(query).length;
+        },
+        async insertOne(document) {
+            items.push(document);
+            return { insertedId: document.id || Date.now().toString(36) };
+        },
+        async updateOne(query, update) {
+            const item = items.find(entry => matchMemoryQuery(entry, query));
+            if (!item) return { matchedCount: 0, modifiedCount: 0 };
+            if (update.$set) Object.assign(item, update.$set);
+            if (update.$inc) {
+                for (const [key, value] of Object.entries(update.$inc)) {
+                    item[key] = (item[key] || 0) + value;
+                }
+            }
+            return { matchedCount: 1, modifiedCount: 1 };
+        },
+        async replaceOne(query, replacement) {
+            const index = items.findIndex(entry => matchMemoryQuery(entry, query));
+            if (index === -1) {
+                items.push(replacement);
+                return { upsertedCount: 1 };
+            }
+            items[index] = replacement;
+            return { matchedCount: 1, modifiedCount: 1 };
+        },
+        async deleteOne(query) {
+            const index = items.findIndex(entry => matchMemoryQuery(entry, query));
+            if (index === -1) return { deletedCount: 0 };
+            items.splice(index, 1);
+            return { deletedCount: 1 };
+        },
+        async deleteMany(query = {}) {
+            const remaining = items.filter(entry => !matchMemoryQuery(entry, query));
+            const deletedCount = items.length - remaining.length;
+            items.splice(0, items.length, ...remaining);
+            return { deletedCount };
+        },
+        find(query = {}) {
+            const filtered = queryList(query);
+            return {
+                sort(sortField = {}) {
+                    const result = applySort(filtered, sortField);
+                    return {
+                        limit(limitCount) {
+                            return {
+                                async toArray() { return limitCount ? result.slice(0, limitCount) : result; }
+                            };
+                        },
+                        async toArray() { return result; }
+                    };
+                },
+                limit(limitCount) {
+                    return {
+                        async toArray() { return limitCount ? filtered.slice(0, limitCount) : filtered; }
+                    };
+                },
+                async toArray() { return filtered; }
+            };
+        },
+        async findOneAndUpdate(query, update) {
+            const item = items.find(entry => matchMemoryQuery(entry, query));
+            if (!item) return null;
+            if (update.$set) Object.assign(item, update.$set);
+            if (update.$inc) {
+                for (const [key, value] of Object.entries(update.$inc)) {
+                    item[key] = (item[key] || 0) + value;
+                }
+            }
+            return { value: item };
+        }
+    };
+}
+
+if (useMemoryDb) {
+    samasyaCollection = createMemoryCollection();
+    suchnaCollection = createMemoryCollection();
+    jaankariCollection = createMemoryCollection();
+    yojanaCollection = createMemoryCollection();
+    chaupalCollection = createMemoryCollection();
+    krishiCollection = createMemoryCollection();
+    db = {};
+}
+
 // ===== PRADHAN (ADMIN) LOGIN =====
 const ADMIN_PASSWORD =
-    process.env.ADMIN_PASSWORD || 'jagdishpur2026';
+    process.env.ADMIN_PASSWORD || 'bastigaon2026';
 
 function requireAdmin(req, res, next) {
     const key = req.headers['x-admin-key'];
@@ -76,7 +215,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Database readiness check middleware
 app.use('/api', (req, res, next) => {
     if (req.path === '/admin/login') return next();
-    if (!db) {
+    if (!db && !useMemoryDb) {
         return res.status(503).json({
             error: 'Database se connection ban raha hai, kripya 5 second baad dobara koshish karein.'
         });
@@ -87,7 +226,7 @@ app.use('/api', (req, res, next) => {
 // ===== DEFAULT DATA =====
 
 const DEFAULT_JAANKARI = {
-    history: 'जगदीशपुर एक समृद्ध और ऐतिहासिक गाँव है, जहाँ कृषि, भाईचारा और शांति का माहौल है। यहाँ के किसान मेहनती हैं और विभिन्न फसलों की उन्नत खेती करते हैं।',
+    history: 'बस्ती गाँव एक समृद्ध और ऐतिहासिक गाँव है, जहाँ कृषि, भाईचारा और शांति का माहौल है। यहाँ के किसान मेहनती हैं और विभिन्न फसलों की उन्नत खेती करते हैं।',
     population: 'लगभग 3,500 (परिवार: 450+)',
     contacts: [
         { who: '🚑 एम्बुलेंस आपातकालीन सेवा', num: '108', category: 'emergency' },
@@ -869,6 +1008,11 @@ app.listen(PORT, () => {
 });
 
 async function connectDB() {
+    if (useMemoryDb) {
+        console.log('✅ MongoDB URI missing, local in-memory database active.');
+        return;
+    }
+
     try {
         console.log('🔄 Connecting to MongoDB Atlas...');
         await client.connect();

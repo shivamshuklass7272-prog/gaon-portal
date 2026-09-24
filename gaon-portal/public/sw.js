@@ -3,14 +3,14 @@
 // Data (samasya/suchna/jaankari/yojana) ke liye hamesha server (/api/...) hi use hota hai —
 // sirf app ka shell (HTML/CSS/JS/icons) cache hota hai, taaki app turant khule.
 
-const CACHE_NAME = 'gaon-portal-shell-v28';
+const CACHE_NAME = 'gaon-portal-shell-v30';
 const SHELL_FILES = [
   '/',
   '/index.html',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  '/images/builder-photo.jpg',
+  '/images/builder-photo-v2.svg',
   '/images/crops/dhan.jpg',
   '/images/crops/ganna.jpg',
   '/images/crops/chana.jpg',

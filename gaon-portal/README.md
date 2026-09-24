@@ -1,9 +1,8 @@
-# Alok Kushwaha Gaon Portal (जगदीशपुर गाँव पोर्टल)
+# Basti Gaon Portal (बस्ती गाँव पोर्टल)
 
-🌐 **Live Website**: [https://jagdishpurgaon1.onrender.com/](https://jagdishpurgaon1.onrender.com/)  
-👨‍💻 **Developer & Creator**: Alok Kushwaha  
+🌐 **Live Website**: [https://bastigaonportal.onrender.com/](https://bastigaonportal.onrender.com/)  
 
-जगदीशपुर ग्राम पंचायत के लिए डिजिटल कम्युनिटी पोर्टल — समस्या निवारण, सूचना बोर्ड, गाँव की जानकारी, सरकारी योजनाएं, छात्र व युवा कोना, स्वास्थ्य सेवा, और 1-क्लिक सरकारी फॉर्म।
+बस्ती ग्राम पंचायत के लिए डिजिटल कम्युनिटी पोर्टल — समस्या निवारण, सूचना बोर्ड, गाँव की जानकारी, सरकारी योजनाएं, छात्र व युवा कोना, स्वास्थ्य सेवा, और 1-क्लिक सरकारी फॉर्म।
 
 ## Kya hai isme
 
@@ -91,12 +90,12 @@ Jab aap README ke "Internet par live karne ke liye" wale section me diye gaye st
 
 Ab samasyaein/complaints sirf **Gaon ke Pradhan** hi dekh sakte hain — login karke. Aam gaon wale sirf apni samasya darj kar sakte hain, kisi aur ki complaint nahi dekh sakte.
 
-**Default password:** `jagdishpur2026`
+**Default password:** `bastigaon2026`
 
 ### Password badalne ke liye
 `server.js` file me ye line dhundein (upar ke paas):
 ```javascript
-const ADMIN_PASSWORD = 'jagdishpur2026';
+const ADMIN_PASSWORD = 'bastigaon2026';
 ```
 Ise apni marzi ka koi bhi password bana kar save kar dein, aur server restart kar dein (`Ctrl+C` phir `npm start`).
 
