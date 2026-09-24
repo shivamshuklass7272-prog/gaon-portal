@@ -70,6 +70,31 @@ Agar poora gaon isse apne-apne phone se access kare (na ki sirf aapke computer s
 - [Render.com](https://render.com) (free tier available)
 - [Railway.app](https://railway.app)
 
+### Render deploy setup (ready)
+
+Is repo me `render.yaml` file already include hai. Bas aapko Render par yeh steps follow karni hain:
+
+1. GitHub repo ko Render me add karein.
+2. New Web Service create karein.
+3. GitHub repo select karein.
+4. Render apne aap `npm install` aur `npm start` run karega.
+5. Optional: `.env` me `ADMIN_PASSWORD` aur `MONGODB_URI` set kar sakte hain.
+
+Agar aap env variables set karna chahte hain, to `.env.example` file ko copy karke `.env` banayein:
+
+```bash
+cp .env.example .env
+```
+
+#### Example env values
+```env
+PORT=3000
+ADMIN_PASSWORD=bastigaon2026
+MONGODB_URI=
+```
+
+> Agar `MONGODB_URI` blank rahe to app automatically memory mode me kaam karega. Production deploy ke liye MongoDB ka URI add karna better rahega.
+
 Wahan is poore folder ko upload/connect karke "Node.js app" ke roop me deploy kar sakte hain — koi extra code change ki zarurat nahi hai.
 
 ## Android App ki tarah kaise install karein (PWA)
