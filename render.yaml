@@ -3,6 +3,7 @@ services:
     name: gaon-portal
     env: node
     plan: free
+    rootDir: gaon-portal
     buildCommand: npm install
     startCommand: npm start
     envVars:
